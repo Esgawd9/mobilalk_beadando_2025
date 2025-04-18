@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "43344897113",
+    "project_id": "reflexgamemobileapplications",
+    "storage_bucket": "reflexgamemobileapplications.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:43344897113:android:6e92526094f53a5f60bd48",
+        "android_client_info": {
+          "package_name": "com.example.reflexgamemobileapplications"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwoFduaKTGRNG_Nf6R3Z1hlpCybmJP6is"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

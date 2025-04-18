@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/playGameButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Play Reflex Game"
+        android:layout_marginTop="16dp"
+        android:textSize="30sp"
+        android:backgroundTint="@color/green"
+        android:hapticFeedbackEnabled="true"
+        android:textColor="@android:color/white"/>
+
+
+    <Button
+        android:id="@+id/leaderboardButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="View Leaderboard"
+        android:hapticFeedbackEnabled="true"
+        android:backgroundTint="@color/blue"
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/red"
+        android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        android:text="Logout"
+        android:hapticFeedbackEnabled="true"
+        android:textColor="@android:color/white" />
+</LinearLayout>

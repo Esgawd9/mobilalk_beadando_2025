@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">ReflexGameMobileApplications</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_register_here">Don\'t have an account? Register here</string>
+    <string name="create_account">Create Account</string>
+    <string name="welcome_to_the_app">Welcome to my App!</string>
+    <string name="logout">Logout</string>
+    <string name="register">Register</string>
+    <string name="already_have_an_account_login_here">Already have an account? Login here</string>
+    <string name="username">Username</string>
+</resources>
