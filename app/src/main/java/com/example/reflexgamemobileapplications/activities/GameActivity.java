@@ -101,7 +101,7 @@ public class GameActivity extends AppCompatActivity {
         targetButton.setText(reactionTime + " ms");
         updateAverage();
 
-        saveReactionTime(reactionTime);
+//        saveReactionTime(reactionTime);
 
         targetButton.setEnabled(false);
         currentRound++;
@@ -126,9 +126,6 @@ public class GameActivity extends AppCompatActivity {
 
         if (mAuth.getCurrentUser() != null) {
             String uid = mAuth.getCurrentUser().getUid();
-
-            mDatabase.child("users").child(uid).child("allReactionTimes")
-                    .setValue(reactionTimes);
 
             mDatabase.child("users").child(uid).child("historicalAverages")
                     .push().setValue(finalAverage)
@@ -187,15 +184,6 @@ public class GameActivity extends AppCompatActivity {
                 targetButton.setText("CLICK NOW!");
             }
         }, 1000 + (long)(Math.random() * 4000));
-    }
-
-    private void saveReactionTime(long reactionTime) {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            String uid = user.getUid();
-            mDatabase.child("users").child(uid).child("reactionTimes")
-                    .push().setValue(reactionTime);
-        }
     }
 
     private void vibrate(int time) {

@@ -55,7 +55,6 @@ public class LeaderboardActivity extends AppCompatActivity {
                     String username = userSnapshot.child("username").getValue(String.class);
                     List<Long> reactionTimes = new ArrayList<>();
 
-                    // Get all reaction times
                     for (DataSnapshot timeSnapshot : userSnapshot.child("historicalAverages").getChildren()) {
                         Long time = timeSnapshot.getValue(Long.class);
                         if (time != null) {

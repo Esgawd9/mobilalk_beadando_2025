@@ -94,9 +94,9 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
-                        sendVerificationEmail();
+//                        sendVerificationEmail();
                         Toast.makeText(RegisterActivity.this,
-                                "Registration successful! Please verify your email.",
+                                "Registration successful!",
                                 Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                         finish();
@@ -107,15 +107,15 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private void sendVerificationEmail() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            user.sendEmailVerification()
-                    .addOnCompleteListener(task -> {
-                        if (!task.isSuccessful()) {
-                            Log.e(TAG, "Failed to send verification email", task.getException());
-                        }
-                    });
-        }
-    }
+//    private void sendVerificationEmail() {
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if (user != null) {
+//            user.sendEmailVerification()
+//                    .addOnCompleteListener(task -> {
+//                        if (!task.isSuccessful()) {
+//                            Log.e(TAG, "Failed to send verification email", task.getException());
+//                        }
+//                    });
+//        }
+//    }
 }
