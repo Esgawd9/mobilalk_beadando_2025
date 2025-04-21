@@ -1,37 +1,42 @@
 package com.example.reflexgamemobileapplications.activities;
 
 import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.reflexgamemobileapplications.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
+    private final int TARGET_SIZE = 250; // Size of the target
+    private final int TOTAL_TARGETS = 30;
+    private final int MAX_FALSE_STARTS = 3;
 
     private static final String TAG = "GameActivity";
-    private Button targetButton, retryButton, mainMenuButton;
-    private TextView averageText, roundCounterText;
+    private Button retryButton, mainMenuButton;
+    private TextView averageText, roundCounterText, finalAverageText;
     private long startTime;
     private List<Long> reactionTimes = new ArrayList<>();
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private int currentRound = 0;
-    private final int TOTAL_ROUNDS = 5;
     private int falseStarts = 0;
-    private final int MAX_FALSE_STARTS = 3;
+    private View targetView;
+    private FrameLayout gameLayout;
+    private boolean firstTargetClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +44,10 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.game_activity);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance("https://reflexgamemobileapplications-default-rtdb.europe-west1.firebasedatabase.app").getReference();
-        targetButton = findViewById(R.id.targetButton);
+        gameLayout = findViewById(R.id.gameLayout);
         averageText = findViewById(R.id.averageText);
         roundCounterText = findViewById(R.id.roundCounterText);
+        finalAverageText = findViewById(R.id.finalAverageText);
 
         retryButton = findViewById(R.id.retryButton);
         mainMenuButton = findViewById(R.id.mainMenuButton);
@@ -49,80 +55,83 @@ public class GameActivity extends AppCompatActivity {
         retryButton.setOnClickListener(v -> retryGame());
         mainMenuButton.setOnClickListener(v -> returnToMainMenu());
 
-        // Initially hide these buttons
+        // Initially hidden
         retryButton.setVisibility(View.GONE);
         mainMenuButton.setVisibility(View.GONE);
+        finalAverageText.setVisibility(View.GONE);
 
-        targetButton.setOnClickListener(v -> {
-            if (targetButton.isEnabled()) {
-                if (targetButton.getText().toString().equals("Wait for green...")) {
-                    onFalseStart();
-                } else {
-                    onTargetClick();
-                }
+        updateTargetCounter();
+
+        // load layout
+        gameLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                gameLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                setupGame();
             }
         });
-
-        updateRoundCounter();
-        setupGame();
     }
 
-    private void updateRoundCounter() {
-        roundCounterText.setText("Round " + (currentRound + 1) + "/" + TOTAL_ROUNDS);
+    private void updateTargetCounter() {
+        roundCounterText.setText("Target " + (currentRound + 1) + "/" + TOTAL_TARGETS);
     }
 
-    private void onFalseStart() {
-        falseStarts++;
-
-        playGeneratedBeep(100);
-        vibrate(100);
-        targetButton.setText("TOO SOON! (" + falseStarts + "/" + MAX_FALSE_STARTS + ")");
-        targetButton.setBackgroundColor(Color.YELLOW);
-        targetButton.setEnabled(false);
-
-        if (falseStarts >= MAX_FALSE_STARTS) {
-            reactionTimes.clear();
-            averageText.setText("Too many false starts! Restarting...");
-            falseStarts = 0;
-            currentRound = 0;
-        }
-
-        new Handler().postDelayed(this::setupGame, 2000);
-    }
+//    private void onFalseStart() {
+//        falseStarts++;
+//
+//        vibrate();
+//
+//        if (falseStarts >= MAX_FALSE_STARTS) {
+//            reactionTimes.clear();
+//            averageText.setText("Too many false starts! Restarting...");
+//            falseStarts = 0;
+//            currentRound = 0;
+//            firstTargetClicked = false; // Reset the flag
+//        }
+//
+//        new Handler().postDelayed(this::setupGame, 2000);
+//    }
 
     private void onTargetClick() {
-        vibrate(60);
-        playGeneratedBeep(60);
-        long reactionTime = System.currentTimeMillis() - startTime;
-        reactionTimes.add(reactionTime);
+        vibrate();
+
+        if (!firstTargetClicked) {
+            firstTargetClicked = true;
+            startTime = System.currentTimeMillis();
+        } else {
+            long reactionTime = System.currentTimeMillis() - startTime;
+            reactionTimes.add(reactionTime);
+            startTime = System.currentTimeMillis();
+            updateAverage();
+        }
+
         falseStarts = 0;
 
-        targetButton.setBackgroundColor(Color.BLUE);
-        targetButton.setText(reactionTime + " ms");
-        updateAverage();
+        if (targetView != null) {
+            gameLayout.removeView(targetView);
+        }
 
-//        saveReactionTime(reactionTime);
-
-        targetButton.setEnabled(false);
         currentRound++;
 
-        if (currentRound < TOTAL_ROUNDS) {
-            new Handler().postDelayed(this::setupGame, 1500);
+        if (currentRound < TOTAL_TARGETS) {
+            setupGame();
         } else {
             endGame();
         }
-        updateRoundCounter();
+        updateTargetCounter();
     }
 
     private void endGame() {
-        targetButton.setEnabled(false);
-        targetButton.setText("Game Over!");
-        targetButton.setBackgroundColor(Color.LTGRAY);
+        if (targetView != null) {
+            gameLayout.removeView(targetView);
+        }
         retryButton.setVisibility(View.VISIBLE);
         mainMenuButton.setVisibility(View.VISIBLE);
+        finalAverageText.setVisibility(View.VISIBLE);
+        averageText.setVisibility(View.GONE);
 
         long finalAverage = calculateAverage();
-        averageText.setText("Final Average: " + finalAverage + " ms");
+        finalAverageText.setText("Final Average: " + finalAverage + " ms");
 
         if (mAuth.getCurrentUser() != null) {
             String uid = mAuth.getCurrentUser().getUid();
@@ -141,12 +150,15 @@ public class GameActivity extends AppCompatActivity {
         reactionTimes.clear();
         currentRound = 0;
         falseStarts = 0;
+        firstTargetClicked = false;
 
         retryButton.setVisibility(View.GONE);
         mainMenuButton.setVisibility(View.GONE);
+        finalAverageText.setVisibility(View.GONE);
+        averageText.setVisibility(View.VISIBLE);
 
         averageText.setText("");
-        updateRoundCounter();
+        updateTargetCounter();
 
         setupGame();
     }
@@ -172,29 +184,29 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setupGame() {
-        targetButton.setBackgroundColor(Color.RED);
-        targetButton.setText("Wait for green...");
-        targetButton.setEnabled(true);
+        int width = gameLayout.getWidth();
+        int height = gameLayout.getHeight();
 
-        new Handler().postDelayed(() -> {
-            if (currentRound < TOTAL_ROUNDS && targetButton.getText().toString().equals("Wait for green...")) {
-                startTime = System.currentTimeMillis();
-                targetButton.setBackgroundColor(Color.GREEN);
-                vibrate(10);
-                targetButton.setText("CLICK NOW!");
-            }
-        }, 1000 + (long)(Math.random() * 4000));
+        Random random = new Random();
+        int x = random.nextInt(width - TARGET_SIZE);
+        int y = random.nextInt(height - TARGET_SIZE);
+
+        targetView = new View(this);
+        ShapeDrawable circle = new ShapeDrawable(new OvalShape());
+        circle.getPaint().setColor(Color.GREEN);
+        targetView.setBackground(circle);
+        targetView.setLayoutParams(new FrameLayout.LayoutParams(TARGET_SIZE, TARGET_SIZE));
+        targetView.setX(x);
+        targetView.setY(y);
+        targetView.setOnClickListener(v -> onTargetClick());
+
+        gameLayout.addView(targetView);
     }
 
-    private void vibrate(int time) {
+    private void vibrate() {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
-            vibrator.vibrate(time);
+            vibrator.vibrate(60);
         }
-    }
-
-    private void playGeneratedBeep(int time) {
-        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-        toneGen.startTone(ToneGenerator.TONE_PROP_BEEP, time); // 500ms beep
     }
 }

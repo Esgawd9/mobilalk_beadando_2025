@@ -16,7 +16,7 @@
 
     <Button
         android:id="@+id/playGameButton"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:text="Play Reflex Game"
         android:layout_marginTop="16dp"
@@ -28,7 +28,7 @@
 
     <Button
         android:id="@+id/leaderboardButton"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="View Leaderboard"

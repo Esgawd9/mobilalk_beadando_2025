@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 String username = dataSnapshot.child("username").getValue(String.class);
-                                welcomeText.setText("Welcome! \n" + username + "!");
+                                welcomeText.setText("Welcome \n" + username + "!");
                             } else {
-                                welcomeText.setText("Welcome " + currentUser.getEmail());
+                                welcomeText.setText("Welcome! " + currentUser.getEmail());
                             }
                         }
 

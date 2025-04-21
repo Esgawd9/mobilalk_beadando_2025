@@ -8,39 +8,42 @@
         android:id="@+id/roundCounterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Round 1/5"
         android:textSize="18sp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"/>
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/gameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="503dp"
+        android:layout_above="@id/endGameButtons"
+        android:layout_below="@id/roundCounterText"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="76dp">
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/averageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:text="Average: -- ms"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_above="@id/endGameButtons"
+        android:layout_marginBottom="4sp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/finalAverageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="24sp"
+        android:textStyle="bold"
         android:layout_centerInParent="true"
-        android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/averageText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Average: -- ms"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="40dp" />
-
-        <Button
-            android:id="@+id/targetButton"
-            android:layout_width="300dp"
-            android:layout_height="160dp"
-            android:text="Wait..."
-            android:textSize="22sp"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/blue"
-            android:elevation="6dp"/>
-
-    </LinearLayout>
+        android:visibility="gone"/> <!-- Initially hidden -->
 
     <LinearLayout
         android:id="@+id/endGameButtons"
@@ -74,6 +77,5 @@
             android:visibility="gone"
             android:backgroundTint="@color/red"/>
     </LinearLayout>
-
 
 </RelativeLayout>
