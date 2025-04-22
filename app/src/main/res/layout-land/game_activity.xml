@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginVertical="12dp"
+    android:layout_marginHorizontal="36dp">
+
+    <TextView
+        android:id="@+id/roundCounterText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="8sp"
+        android:layout_centerHorizontal="true"/>
+
+    <FrameLayout
+        android:id="@+id/gameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="503dp"
+        android:layout_above="@id/endGameButtons"
+        android:layout_below="@id/roundCounterText"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp">
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/averageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Average: -- ms"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:layout_above="@id/endGameButtons"
+
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/finalAverageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/> <!-- Initially hidden -->
+
+    <LinearLayout
+        android:id="@+id/endGameButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/retryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"
+            android:textSize="18sp"
+            android:layout_marginEnd="16dp"
+            android:paddingHorizontal="24dp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:backgroundTint="@color/green"/>
+
+        <Button
+            android:id="@+id/mainMenuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Main Menu"
+            android:textSize="18sp"
+            android:paddingHorizontal="24dp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:backgroundTint="@color/red"/>
+    </LinearLayout>
+
+</RelativeLayout>

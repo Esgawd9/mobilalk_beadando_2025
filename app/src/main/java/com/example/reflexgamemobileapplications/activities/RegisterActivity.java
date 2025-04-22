@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = "RegisterActivity";
@@ -37,9 +39,9 @@ public class RegisterActivity extends AppCompatActivity {
         TextInputEditText usernameEditText = findViewById(R.id.username);
 
         findViewById(R.id.registerBtn).setOnClickListener(v -> {
-            String email = emailEditText.getText().toString().trim();
-            String password = passwordEditText.getText().toString().trim();
-            String username = usernameEditText.getText().toString().trim();
+            String email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
+            String password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
+            String username = Objects.requireNonNull(usernameEditText.getText()).toString().trim();
 
             if (validateInputs(email, password, username)) {
                 registerUser(email, password, username);
@@ -61,8 +63,20 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Username is required", Toast.LENGTH_SHORT).show();
             return false;
         }
+        if (username.length() < 3) {
+            Toast.makeText(this, "Username must be at least 3 characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (username.length() > 20) {
+            Toast.makeText(this, "Username must be maximum 20 characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if (password.length() < 6) {
             Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (password.length() > 20) {
+            Toast.makeText(this, "Password must be maximum 20 characters", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -82,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
                     } else {
                         progressDialog.dismiss();
                         Toast.makeText(RegisterActivity.this,
-                                "Registration failed: " + task.getException().getMessage(),
+                                "Registration failed: " + Objects.requireNonNull(task.getException()).getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
