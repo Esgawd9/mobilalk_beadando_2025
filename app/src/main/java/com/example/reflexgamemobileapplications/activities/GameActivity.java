@@ -2,6 +2,7 @@ package com.example.reflexgamemobileapplications.activities;
 
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -20,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
@@ -44,7 +44,7 @@ public class GameActivity extends AppCompatActivity {
     private FrameLayout gameLayout;
     private boolean firstTargetClicked = false;
     private boolean failed = false;
-
+    private MediaPlayer clickSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,8 @@ public class GameActivity extends AppCompatActivity {
         mainMenuButton.setVisibility(View.GONE);
         finalAverageText.setVisibility(View.GONE);
 
+//        clickSound = MediaPlayer.create(this, R.raw.click_sound_2);
+
         updateTargetCounter();
 
         // Load layout
@@ -85,7 +87,7 @@ public class GameActivity extends AppCompatActivity {
         roundCounterText.setText("Target " + (currentRound + 1) + "/" + TOTAL_TARGETS);
     }
 
-    private void onFalseStart() {
+    private void onFalseClick() {
         fails++;
 
         vibrate(100);
@@ -104,8 +106,15 @@ public class GameActivity extends AppCompatActivity {
     private void onTargetClick(View targetView) {
         vibrate(60);
 
+        if (clickSound != null) {
+            if (clickSound.isPlaying()) {
+                clickSound.seekTo(0);
+            }
+            clickSound.start();
+        }
+
         if (targetView == yellowTargetView) {
-            onFalseStart();
+            onFalseClick();
             return;
         }
 
@@ -271,17 +280,23 @@ public class GameActivity extends AppCompatActivity {
 
     private void enableImmersiveMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Objects.requireNonNull(getWindow().getInsetsController()).hide(WindowInsets.Type.systemBars());
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().getInsetsController().hide(WindowInsets.Type.systemBars());
             getWindow().getInsetsController().setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         }
     }
 
     private void disableImmersiveMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Objects.requireNonNull(getWindow().getInsetsController()).show(WindowInsets.Type.systemBars());
+            getWindow().getInsetsController().show(WindowInsets.Type.systemBars());
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Release media player
+        if (clickSound != null) {
+            clickSound.release();
+        }
+    }
 }
